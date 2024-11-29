@@ -4,8 +4,8 @@
     "slug": "your-app-name",
     "version": "1.0.0",
     "extra": {
-      "OPENAI_API_KEY": "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",
-      "GOOGLE_API_KEY": "AIzaSyAERm9joKKsoPIlc7_tEL98v7_RoVyddiw",
+      "OPENAI_API_KEY": "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",
+      "GOOGLE_API_KEY": "AIzaSyCPvmTpDt_LXHN6VTpqB4xMtAoSBnkAjoA",
       "DEEPL_API_KEY": "1447a693-e32d-5521-f9ae-10442fb4a1ab:fx",
       "SUPABASE_URL": "https://qkwaojwkrukqykacmrrv.supabase.co",
       "SUPABASE_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFrd2FvandrcnVrcXlrYWNtcnJ2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjkwMzA0NzEsImV4cCI6MjA0NDYwNjQ3MX0.4YOrWXNGvQO334nE-WC9n3HSwkazCYvKfGo4772ZmIQ"
