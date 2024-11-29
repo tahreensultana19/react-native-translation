@@ -19,7 +19,7 @@ const supabaseKey = process.env.SUPABASE_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 // Endpoint to save a translation
-app.post("/api/translations", async (req, res) => {
+app.post("192.168.5.8/api/translations", async (req, res) => {
   const { original_message, translated_message, language, model, score } = req.body;
 
   // Validate input
@@ -44,7 +44,7 @@ app.post("/api/translations", async (req, res) => {
 });
 
 // Endpoint to fetch previous translations
-app.get("/api/translations", async (req, res) => {
+app.get("192.168.5.8/api/translations", async (req, res) => {
   try {
     // Fetch translations from the database
     const { data, error } = await supabase
