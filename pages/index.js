@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, TouchableOpacity, TextInput, Button, ActivityIndicator } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, TextInput, Button, ActivityIndicator,FlatList } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { createClient } from '@supabase/supabase-js';
 import Constants from 'expo-constants';
@@ -40,14 +40,14 @@ const App = () => {
   const [previousTranslations, setPreviousTranslations] = useState([]);
 
   const supportedLanguages = {
-    "gpt-3.5-turbo": ["Spanish", "French", "German", "Italian", "Portuguese", "Dutch", "Russian", "Chinese (Simplified)", "Japanese"],
-    "gpt-4": ["Spanish", "French", "Telugu", "German", "Italian", "Portuguese", "Dutch", "Russian", "Chinese (Simplified)", "Japanese", "Korean"],
-    "gpt-4-turbo": ["Spanish", "French", "Telugu", "Japanese", "German", "Italian", "Portuguese", "Dutch", "Russian", "Chinese (Simplified)", "Korean", "Arabic"],
-    "gemini-1.5-pro-001": ["Spanish", "French", "German", "Italian", "Portuguese", "Dutch", "Russian", "Chinese (Simplified)"],
-    "gemini-1.5-flash-001": ["Spanish", "French", "German", "Italian", "Portuguese", "Dutch", "Russian", "Chinese (Simplified)"],
-    "gemini-1.5-pro-002": ["Spanish", "French", "German", "Italian", "Portuguese", "Dutch", "Russian", "Chinese (Simplified)", "Japanese", "Korean"],
-    "gemini-1.5-flash-002": ["Spanish", "French", "German", "Italian", "Portuguese", "Dutch", "Russian", "Chinese (Simplified)", "Japanese", "Korean", "Arabic"],
-    "deepl": ["Spanish", "French", "Japanese", "German", "Italian", "Dutch", "Russian", "Chinese (Simplified)", "Polish", "Portuguese"],
+    "gpt-3.5-turbo": ["Spanish", "French", "German", "Italian", "Portuguese", "Dutch", "Russian", "Chinese (Simplified)", "Japanese", "Swedish", "Arabic", "Turkish", "Korean", "Hindi", "Greek", "Hebrew", "Thai", "Vietnamese", "Indonesian", "Malay"],
+    "gpt-4": ["Spanish", "French", "Telugu", "German", "Italian", "Portuguese", "Dutch", "Russian", "Chinese (Simplified)", "Japanese", "Korean", "Swedish", "Arabic", "Turkish", "Hindi", "Greek", "Hebrew", "Thai", "Vietnamese", "Indonesian", "Malay"],
+    "gpt-4-turbo": ["Spanish", "French", "Telugu", "Japanese", "German", "Italian", "Portuguese", "Dutch", "Russian", "Chinese (Simplified)", "Korean", "Arabic", "Swedish", "Turkish", "Hindi", "Greek", "Hebrew", "Thai", "Vietnamese", "Indonesian", "Malay"],
+    "gemini-1.5-pro-001": ["Spanish", "French", "German", "Italian", "Portuguese", "Dutch", "Russian", "Chinese (Simplified)", "Swedish", "Turkish", "Arabic", "Greek", "Hebrew", "Thai", "Vietnamese", "Indonesian", "Malay"],
+    "gemini-1.5-flash-001": ["Spanish", "French", "German", "Italian", "Portuguese", "Dutch", "Russian", "Chinese (Simplified)", "Swedish", "Turkish", "Arabic", "Greek", "Hebrew", "Thai", "Vietnamese", "Indonesian", "Malay"],
+    "gemini-1.5-pro-002": ["Spanish", "French", "German", "Italian", "Portuguese", "Dutch", "Russian", "Chinese (Simplified)", "Japanese", "Korean", "Swedish", "Arabic", "Turkish", "Greek", "Hebrew", "Thai", "Vietnamese", "Indonesian", "Malay"],
+    "gemini-1.5-flash-002": ["Spanish", "French", "German", "Italian", "Portuguese", "Dutch", "Russian", "Chinese (Simplified)", "Japanese", "Korean", "Arabic", "Swedish", "Turkish", "Greek", "Hebrew", "Thai", "Vietnamese", "Indonesian", "Malay"],
+    "deepl": ["Spanish", "French", "Japanese", "German", "Italian", "Dutch", "Russian", "Chinese (Simplified)", "Polish", "Portuguese", "Swedish", "Turkish", "Arabic", "Korean", "Hindi", "Greek", "Hebrew", "Thai", "Vietnamese", "Indonesian", "Malay"],
   };
 
   const handleInputChange = (name, value) => {
@@ -142,16 +142,27 @@ const App = () => {
 
   const translateWithDeepL = async (text, toLang) => {
     const deepLLanguageCodes = {
-      Spanish: "ES",
-      French: "FR",
-      German: "DE",
-      Italian: "IT",
-      Dutch: "NL",
-      Russian: "RU",
-      "Chinese (Simplified)": "ZH",
-      Japanese: "JA",
-      Portuguese: "PT",
-      Polish: "PL",
+      "Spanish": "ES",
+    "French": "FR",
+    "German": "DE",
+    "Italian": "IT",
+    "Dutch": "NL",
+    "Russian": "RU",
+    "Chinese (Simplified)": "ZH",
+    "Japanese": "JA",
+    "Portuguese": "PT",
+    "Polish": "PL",
+    "Swedish": "SV",
+    "Arabic": "AR",
+    "Turkish": "TR",
+    "Korean": "KO",
+    "Hindi": "HI",
+    "Greek": "EL",
+    "Hebrew": "HE",
+    "Thai": "TH",
+    "Vietnamese": "VI",
+    "Indonesian": "ID",
+    "Malay": "MS",
     };
 
     try {
@@ -245,23 +256,40 @@ const App = () => {
           </View>
         )}
 
-        <View style={styles.previousTranslations}>
-          <Text style={styles.previousTitle}>Previous Translations</Text>
-          {previousTranslations.map((translation, index) => (
-            <View key={index} style={styles.translationItem}>
-              <Text>Original: {translation.original_message}</Text>
-              <Text>Translated: {translation.translated_message}</Text>
-              <Text>Language: {translation.language}</Text>
-              <Text>Model: {translation.model}</Text>
+       
+        <Text style={styles.heading}>Previous Translations</Text>
+        {previousTranslations.length > 0 ? (
+          <View style={styles.table}>
+            <View style={styles.tableHeader}>
+              <Text style={styles.tableHeaderCell}>Original</Text>
+              <Text style={styles.tableHeaderCell}>Translated</Text>
+              <Text style={styles.tableHeaderCell}>Language</Text>
+              <Text style={styles.tableHeaderCell}>Model</Text>
+              <Text style={styles.tableHeaderCell}>Date</Text>
             </View>
-          ))}
-        </View>
+            <FlatList
+              data={previousTranslations}
+              keyExtractor={(item) => item.id.toString()} // Assuming 'id' is a unique identifier
+              renderItem={({ item }) => (
+                <View style={styles.tableRow}>
+                  <Text style={styles.tableCell}>{item.original_message}</Text>
+                  <Text style={styles.tableCell}>{item.translated_message}</Text>
+                  <Text style={styles.tableCell}>{item.language}</Text>
+                  <Text style={styles.tableCell}>{item.model}</Text>
+                  <Text style={styles.tableCell}>{new Date(item.created_at).toLocaleString()}</Text>
+                </View>
+              )}
+            />
+          </View>
+        ) : (
+          <Text>No previous translations found.</Text>
+        )}
       </View>
-
       <StatusBar style="auto" />
     </View>
   );
 };
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -312,6 +340,32 @@ const styles = StyleSheet.create({
   translation: {
     fontSize: 18,
     marginTop: 20,
+  },
+  table: {
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 5,
+    overflow: 'hidden',
+  },
+  tableHeader: {
+    flexDirection: 'row',
+    backgroundColor: '#f0f0f0',
+    padding: 10,
+  },
+  tableHeaderCell: {
+    flex: 1,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  tableRow: {
+    flexDirection: 'row',
+    borderBottomWidth: 1,
+    borderBottomColor: '#ddd',
+    padding: 10,
+  },
+  tableCell: {
+    flex: 1,
+    textAlign: 'center',
   },
 });
 
