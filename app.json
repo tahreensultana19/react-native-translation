@@ -4,7 +4,7 @@
       "slug": "your-app-name",
       "version": "1.0.0",
       "extra": {
-        "OPENAI_API_KEY": "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",
+        "OPENAI_API_KEY": "0",
         "GOOGLE_API_KEY": "AIzaSyCPvmTpDt_LXHN6VTpqB4xMtAoSBnkAjoA",
         "DEEPL_API_KEY": "1447a693-e32d-5521-f9ae-10442fb4a1ab:fx",
         "SUPABASE_URL": "https://qkwaojwkrukqykacmrrv.supabase.co",
