@@ -7,7 +7,7 @@ import { createClient } from '@supabase/supabase-js';
 import Constants from 'expo-constants';
 import { Configuration, OpenAIApi } from 'openai';
 import { GoogleGenerativeAI } from '@google/generative-ai';
-import CheckBox from '@react-native-community/checkbox'; // Import CheckBox
+
 
 // Initialize Supabase client
 const supabase = createClient(
@@ -489,15 +489,18 @@ const CompareTranslate = () => {
         ))}
       </Picker>
       <Text style={styles.subTitle}>Select Models:</Text>
-      {models.map((model) => (
-        <TouchableOpacity
-          key={model}
-          style={styles.modelOption}
-          onPress={() => handleModelChange(model)}
-        >
-          <Text style={{ color: formData.models.includes(model) ? '#0000ff' : '#000' }}>{model}</Text>
-        </TouchableOpacity>
-      ))}
+      <View style={styles.modelContainer}>
+    {models.map((model) => (
+      <TouchableOpacity
+        key={model}
+        style={[styles.modelOption, formData.models.includes(model) && styles.active]}
+        onPress={() => handleModelChange(model)}
+      >
+        <Text style={{ color: formData.models.includes(model) ? '#0000ff' : '#000' }}>{model}</Text>
+        
+      </TouchableOpacity>
+    ))}
+  </View>
       <Button title="Translate" onPress={handleOnSubmit} disabled={isLoading} />
       {isLoading && <ActivityIndicator size="large" color="#0000ff" />}
       {error && <Text style={styles.errorText}>{error}</Text>}
@@ -529,149 +532,125 @@ const CompareTranslate = () => {
 const styles = StyleSheet.create({
   container: {
     padding: 20,
+    backgroundColor: '#f4f4f8', // Subtle off-white background
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
+    color: '#1a1a1a', // Dark gray for strong contrast
   },
   subTitle: {
     fontSize: 18,
     marginVertical: 10,
+    color: '#444444', // Medium gray for subtle emphasis
   },
   textInput: {
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: '#d0d0d0', // Light gray border
     padding: 10,
     marginBottom: 10,
+    backgroundColor: '#ffffff', // White background for inputs
+    color: '#333333', // Dark text color for better readability
   },
   picker: {
     height: 50,
     width: '100%',
     marginBottom: 10,
+    backgroundColor: '#ffffff', // White background
+    color: '#333333', // Text color for contrast
   },
   modelOption: {
     padding: 10,
     borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
+    borderBottomColor: '#dddddd', // Light border
+    backgroundColor: '#f7f7f7', // Light background
+    color: '#333333', // Text color
   },
   results: {
     marginTop: 20,
+    backgroundColor: '#f9f9f9', // Subtle background for results
   },
   resultRow: {
     marginVertical: 5,
+    backgroundColor: '#ffffff', // White for rows
+    borderBottomWidth: 1,
+    borderBottomColor: '#e0e0e0', // Light border between rows
   },
   resultText: {
     fontSize: 16,
+    color: '#2e2e2e', // Strong text color for results
   },
   errorText: {
-    color: 'red',
+    color: '#ff4d4f', // Red for errors
   },
   modelRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between', // Distribute space evenly
-    marginBottom: 10, // Add some space between rows
+    justifyContent: 'space-between',
+    marginBottom: 10,
   },
   modelOption: {
-    flex: 1, // Allow each model option to take equal space
+    flex: 1,
     padding: 10,
     borderWidth: 1,
-    borderColor: "#ddd",
-    marginHorizontal: 5, // Add horizontal margin between buttons
-    alignItems: 'center', // Center the text
+    borderColor: '#cccccc', // Light gray border
+    marginHorizontal: 5,
+    alignItems: 'center',
+    backgroundColor: '#ffffff', // White for clarity
   },
   active: {
-    backgroundColor: "#e0e0e0",
+    backgroundColor: '#e0f7fa', // Soft blue for active state
   },
   table: {
     width: '100%',
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: '#dddddd',
     borderRadius: 5,
     overflow: 'hidden',
     marginTop: 10,
+    backgroundColor: '#ffffff', // White background
   },
   tableHeader: {
     flexDirection: 'row',
-    backgroundColor: '#f2f2f2',
+    backgroundColor: '#e8eaf6', // Light blue for headers
     borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
+    borderBottomColor: '#dddddd',
   },
   tableHeaderCell: {
     flex: 1,
     padding: 10,
     fontWeight: 'bold',
     textAlign: 'center',
+    color: '#333333', // Darker text for headers
     borderRightWidth: 1,
-    borderRightColor: '#ddd',
+    borderRightColor: '#dddddd',
   },
   tableRow: {
     flexDirection: 'row',
     borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
+    borderBottomColor: '#dddddd',
+    backgroundColor: '#ffffff', // White for rows
   },
   tableCell: {
     flex: 1,
     padding: 10,
     textAlign: 'center',
+    color: '#444444', // Medium gray for cell text
     borderRightWidth: 1,
-    borderRightColor: '#ddd',
+    borderRightColor: '#dddddd',
   },
-  // Remove the right border for the last cell in each row
   tableCellLast: {
     borderRightWidth: 0,
   },
   modelContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between', // Distribute space evenly
-    marginBottom: 10, // Add some space below the models
-  },
-  modelOption: {
-    flex: 1, // Allow each model option to take equal space
-    padding: 10,
-    borderWidth: 1,
-    borderColor: "#ddd",
-    marginHorizontal: 5, // Add horizontal margin between buttons
-    alignItems: 'center', // Center the text
-    borderRadius: 5, // Optional: add rounded corners
-  },
-  active: {
-    backgroundColor: "#e0e0e0", // Optional: highlight active model
-  },
+  flexDirection: 'row',
+  flexWrap: 'wrap', // Allow buttons to wrap to the next line if they don't fit in one row
+  justifyContent: 'center', // Center the buttons horizontally
+  marginBottom: 20, // Space between the buttons and the next section
+},
+active: {
+  backgroundColor: '#e3f2fd', // Highlight color for active button
+},
 
-
-
-  table: {
-    width: '100%',
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 5,
-    overflow: 'hidden',
-    marginTop: 10,
-  },
-  tableHeader: {
-    flexDirection: 'row',
-    backgroundColor: '#f2f2f2',
-    borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
-  },
-  headerText: {
-    flex: 1,
-    padding: 10,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    borderRightWidth: 1,
-    borderRightColor: '#ddd',
-  },
-  resultRow: {
-    flexDirection: 'row',
-    borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
-  },
-  resultText: {
-    flex: 1,
-    padding: 10,
-    textAlign: 'center',
-  },
 });
 
 export default App;
