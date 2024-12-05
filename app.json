@@ -4,7 +4,7 @@
       "slug": "Translation-app",
       "version": "1.0.0",
       "extra": {
-        "OPENAI_API_KEY": "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",
+        "OPENAI_API_KEY": "0",
         "GOOGLE_API_KEY": "AIzaSyCPvmTpDt_LXHN6VTpqB4xMtAoSBnkAjoA",
         "DEEPL_API_KEY": "1447a693-e32d-5521-f9ae-10442fb4a1ab:fx",
         "SUPABASE_URL": "https://qkwaojwkrukqykacmrrv.supabase.co",
