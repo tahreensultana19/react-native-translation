@@ -340,6 +340,7 @@ const CompareTranslate = () => {
   };
 
   const handleModelChange = (model) => {
+    // const model = e.target.value;
     setFormData((prevState) => {
       const models = prevState.models.includes(model)
         ? prevState.models.filter((m) => m !== model)
@@ -392,7 +393,7 @@ const CompareTranslate = () => {
         const genAIModel = genAI.getGenerativeModel({ model });
         const prompt = `Translate the text: "${message}" from English to ${toLanguage} with a ${tone.toLowerCase()} tone.`;
         const result = await genAIModel.generateContent(prompt);
-        translatedText = result.response.text;
+        translatedText = await result.response.text();
       } else if (model === 'deepl') {
         translatedText = await translateWithDeepL(message, toLanguage);
       }
@@ -400,8 +401,20 @@ const CompareTranslate = () => {
     } catch (error) {
       console.error('Translation Error:', error);
       setError('Translation failed. Please try again.');
-    } finally {
-      setIsLoading(false);
+      return null;
+    } 
+  };
+  const saveComparison = async (originalMessage, translation, model, score) => {
+    try {
+      const { data, error } = await supabase
+        .from("compare_translations")
+        .insert([{ original_message: originalMessage, translated_message: translation, model, score }]);
+
+      if (error) throw error;
+
+      console.log("Comparison saved:", data);
+    } catch (error) {
+      console.error("Error saving comparison:", error);
     }
   };
 
@@ -418,7 +431,9 @@ const CompareTranslate = () => {
     try {
       const promises = formData.models.map(async (model) => {
         const translation = await translate(model);
+        if (!translation) return null;
         const score = Math.floor(Math.random() * 10) + 1;
+        await saveComparison(formData.message, translation, model, score);
         return { model, translation, score };
       });
 
@@ -441,6 +456,13 @@ const CompareTranslate = () => {
     }
   };
 
+  const supportedLanguages = [
+    "Spanish", "French", "German", "Italian", "Portuguese", "Dutch",
+    "Russian", "Chinese (Simplified)", "Japanese", "Korean",
+    "Arabic", "Turkish", "Hindi", "Greek", "Hebrew", "Thai",
+    "Vietnamese", "Indonesian", "Malay", "Polish"
+  ];
+
   const models = [
     'gemini-1.5-pro-001',
     'gemini-1.5-flash-001',
@@ -450,8 +472,7 @@ const CompareTranslate = () => {
 
   return (
     <View style={styles.container}>
-      <Text 
-      style={styles.title}>Compare Translations</Text>
+      <Text style={styles.title}>Compare Translations</Text>
       <TextInput
         style={styles.textInput}
         placeholder="Enter text to translate"
@@ -483,17 +504,27 @@ const CompareTranslate = () => {
       {Object.keys(translations).length > 0 && (
         <View style={styles.results}>
           <Text style={styles.heading}>Translation Results:</Text>
-          {Object.entries(translations).map(([model, translation]) => (
-            <View key={model} style={styles.resultRow}>
-              <Text style={styles.resultText}>{model}: {translation} (Score: {scores[model]})</Text>
+          <View style={styles.table}>
+            <View style={styles.tableHeader}>
+              <Text style={styles.headerText}>Original</Text>
+              <Text style={styles.headerText}>Model</Text>
+              <Text style={styles.headerText}>Translated</Text>
+              <Text style={styles.headerText}>Score</Text>
             </View>
-          ))}
+            {Object.entries(translations).map(([model, translation]) => (
+              <View key={model} style={styles.resultRow}>
+                <Text style={styles.resultText}>{formData.message}</Text>
+                <Text style={styles.resultText}>{model}</Text>
+                <Text style={styles.resultText}>{translation}</Text>
+                <Text style={styles.resultText}>{scores[model]}</Text>
+              </View>
+            ))}
+          </View>
         </View>
       )}
     </View>
   );
 };
-
 
 const styles = StyleSheet.create({
   container: {
@@ -605,6 +636,41 @@ const styles = StyleSheet.create({
   },
   active: {
     backgroundColor: "#e0e0e0", // Optional: highlight active model
+  },
+
+
+
+  table: {
+    width: '100%',
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 5,
+    overflow: 'hidden',
+    marginTop: 10,
+  },
+  tableHeader: {
+    flexDirection: 'row',
+    backgroundColor: '#f2f2f2',
+    borderBottomWidth: 1,
+    borderBottomColor: '#ddd',
+  },
+  headerText: {
+    flex: 1,
+    padding: 10,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    borderRightWidth: 1,
+    borderRightColor: '#ddd',
+  },
+  resultRow: {
+    flexDirection: 'row',
+    borderBottomWidth: 1,
+    borderBottomColor: '#ddd',
+  },
+  resultText: {
+    flex: 1,
+    padding: 10,
+    textAlign: 'center',
   },
 });
 
