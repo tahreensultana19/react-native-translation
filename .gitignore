@@ -46,3 +46,4 @@ yarn-error.log*
 # @end @expo/next-adapter
 app.json
 
+translation-backend/node_modules/

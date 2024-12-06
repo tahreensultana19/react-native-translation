@@ -120,22 +120,21 @@ const App = () => {
           result = await model4.generateContent(prompt);
         }
 
-        translatedText = result.response.text;
+        const response = await result.response;
+        translatedText = response.text().trim();
       } else if (model === 'deepl') {
         translatedText = await translateWithDeepL(message, language);
       }
 
       setTranslation(translatedText);
 
-      // Save the translation to Supabase
-      await supabase
-        .from('translations')
-        .insert([{
-          original_message: message,
-          translated_message: translatedText,
-          language: language,
-          model: model,
-        }]);
+      await supabase.from('translations').insert([{
+        original_message: message,
+        translated_message: translatedText,
+        language: language,
+        model: model,
+      }]);
+
 
       // Fetch the latest translations after inserting
       fetchPreviousTranslations();

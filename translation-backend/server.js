@@ -10,7 +10,7 @@ const port = process.env.PORT || 5000;
 
 // Middleware
 app.use(cors());
-app.use(bodyParser.json());
+// app.use(bodyParser.json());
 app.use(express.json());
 
 // Supabase client setup
@@ -31,7 +31,7 @@ app.post("192.168.5.8/api/translations", async (req, res) => {
     // Insert translation into the database
     const { data, error } = await supabase
       .from("translations") // Make sure the table exists in Supabase
-      .insert([{ original_message, translated_message, language, model, score }]);
+      .insert([{ original_message, translated_message, language, model}]);
 
     if (error) {
       return res.status(400).json({ error: error.message });
